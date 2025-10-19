@@ -17,7 +17,7 @@ class Comment extends Model
         'user_id'
     ];
 
-    // Relaciones
+    // Relations
     public function post()
     {
         return $this->belongsTo(Post::class);
