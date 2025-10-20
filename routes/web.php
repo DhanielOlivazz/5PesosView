@@ -11,3 +11,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/home', function () {
     return view('home'); // Vista protegida después de login
 })->middleware('auth');
+
+ROUTE::get('/', function () {
+    return view('landing');
+});
+
+route::get('/register', function () {
+    return view('register');
+});
