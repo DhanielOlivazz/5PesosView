@@ -1,111 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5 Pesos Team</title>
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body class="bg-gray-100">
-  <nav class="bg-red-500 text-white">
+<nav class="bg-red-500 text-white shadow-lg sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16 items-center">
+
       <!-- Logo y nombre -->
       <div class="flex items-center space-x-3">
         <img src="https://manga-oni.com/public/archivos/grupos/465/portada.jpg?dt=1750029220"
-          alt="Logo" class="w-10 h-10 rounded-full">
-        <span class="font-bold text-xl">5 Pesos Team</span>
+             alt="Logo" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
+        <span class="font-bold text-2xl tracking-wide drop-shadow-md">5 Pesos Team</span>
       </div>
 
       <!-- Menú desktop -->
-      <div class="hidden md:flex justify-start flex-1 ml-10 space-x-8">
-        <a href="#" class="text-white hover:text-gray-200 font-medium">Inicio</a>
+      <div class="hidden md:flex justify-start flex-1 ml-10 space-x-6 font-medium text-white">
+        <a href="{{ route('home') }}" class="hover:text-gray-200 transition-colors duration-300">Inicio</a>
+        <a href="#lanzamientos" class="hover:text-gray-200 transition-colors duration-300">Lanzamientos</a>
+        <a href="#proyectos" class="hover:text-gray-200 transition-colors duration-300">Proyectos</a>
       </div>
 
       <!-- Búsqueda y perfil -->
       <div class="hidden md:flex items-center space-x-4">
-        <input type="text" placeholder="Buscar..."
-          class="px-3 py-1 rounded text-black focus:outline-none focus:ring-2 focus:ring-white">
-        <button
-          class="bg-white text-red-500 px-4 py-1 rounded font-semibold hover:bg-gray-200 transition">Buscar</button>
-        <!-- Imagen de perfil -->
-        <div class="relative">
-          <button id="profile-btn" class="focus:outline-none">
-            <img src="https://i.pravatar.cc/40" alt="Perfil" class="w-9 h-9 rounded-full">
-          </button>
-
-          <!-- Dropdown -->
-          <div id="profile-menu"
-              class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg z-50">
-              <button type="submit" class="w-full text-left px-4 py-2 text-black hover:bg-gray-100">Mi Perfil</button>
-              <button type="submit" class="w-full text-left px-4 py-2 text-black hover:bg-gray-100">Configuraciones</button>
-              <hr class="my-1 border-gray-300">
-              <!-- Logout -->
-              <form method="POST" action="{{ route('logout') }}">
-                  @csrf
-                  <button type="submit"
-                      class="w-full text-left px-4 py-2 text-black hover:bg-gray-100">Cerrar sesión</button>
-              </form>
-          </div>
+        <div class="flex border border-white rounded-full overflow-hidden focus-within:ring-2 focus-within:ring-white">
+          <input type="text" placeholder="Buscar..." 
+                 class="px-3 py-1 text-black placeholder-gray-400 focus:outline-none">
+          <button class="bg-white text-red-500 px-4 font-semibold hover:bg-gray-200 transition">Buscar</button>
         </div>
+
+        @auth
+          @if(auth()->user()->profile)
+            <div class="relative">
+              <button id="profile-btn" class="focus:outline-none rounded-full border-2 border-white shadow-md">
+                <img src="{{ asset('Images/default-white.svg') }}" alt="Perfil" class="w-9 h-9 rounded-full">
+              </button>
+
+              <div id="profile-menu"
+                   class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-2xl shadow-xl overflow-hidden">
+                <a href="{{ route('profile.show', auth()->user()->profile->id) }}" 
+                   class="block px-4 py-2 hover:bg-red-100 transition">Mi Perfil</a>
+                <hr class="border-gray-300">
+                <form method="POST" action="{{ route('logout') }}">
+                  @csrf
+                  <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-100 transition">
+                    Cerrar sesión
+                  </button>
+                </form>
+              </div>
+            </div>
+          @endif
+        @endauth
       </div>
 
-      <!-- Botón mobile -->
+      <!-- Menú móvil -->
       <div class="md:hidden flex items-center">
-        <button id="menu-btn" class="focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
+        <button id="menu-btn" class="focus:outline-none p-2 rounded hover:bg-red-600 transition">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path>
+                  d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
         </button>
       </div>
     </div>
 
-    <!-- Menú móvil oculto -->
-    <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-3 px-2">
-      <a href="#" class="block px-4 py-2 rounded hover:bg-red-600">Inicio</a>
-      <a href="#" class="block px-4 py-2 rounded hover:bg-red-600">Proyectos</a>
-      <a href="#" class="block px-4 py-2 rounded hover:bg-red-600">Cerrar Sesión</a>
+    <!-- Menú móvil desplegable -->
+    <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2 px-2">
+      <a href="{{ route('home') }}" class="block px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition text-white font-medium">Inicio</a>
+      <a href="#lanzamientos" class="block px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition text-white font-medium">Lanzamientos</a>
+      <a href="#proyectos" class="block px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition text-white font-medium">Proyectos</a>
+
       <div class="flex items-center space-x-2 mt-3">
         <input type="text" placeholder="Buscar..."
-          class="flex-1 px-3 py-1 rounded text-black focus:outline-none focus:ring-2 focus:ring-red-400">
-        <button
-          class="bg-white text-red-500 px-4 py-1 rounded font-semibold hover:bg-gray-200 transition">Buscar</button>
+               class="flex-1 px-3 py-1 rounded-full text-black focus:outline-none focus:ring-2 focus:ring-red-400">
+        <button class="bg-white text-red-500 px-4 py-1 rounded-full font-semibold hover:bg-gray-200 transition">Buscar</button>
       </div>
+
+      @auth
+        @if(auth()->user()->profile)
+          <a href="{{ route('profile.show', auth()->user()->profile->id) }}"
+             class="block px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition text-white font-medium">
+            Mi Perfil
+          </a>
+          <form method="POST" action="{{ route('logout') }}" class="mt-2">
+            @csrf
+            <button type="submit" class="w-full text-left px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition text-white font-medium">
+              Cerrar sesión
+            </button>
+          </form>
+        @endif
+      @endauth
     </div>
   </div>
 </nav>
 
+<script>
+  // Toggle menú móvil
+  const btn = document.getElementById('menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
 
-  <script>
-    // Toggle menú móvil
-    const btn = document.getElementById('menu-btn');
-    const menu = document.getElementById('mobile-menu');
-
-    btn.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
+  // Toggle menú perfil
+  const profileBtn = document.getElementById('profile-btn');
+  const profileMenu = document.getElementById('profile-menu');
+  if(profileBtn){
+    profileBtn.addEventListener('click', () => profileMenu.classList.toggle('hidden'));
+    window.addEventListener('click', e => {
+      if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.add('hidden');
+      }
     });
-  </script>
-  <script>
-      const profileBtn = document.getElementById('profile-btn');
-      const profileMenu = document.getElementById('profile-menu');
-
-      profileBtn.addEventListener('click', () => {
-        profileMenu.classList.toggle('hidden');
-      });
-
-      // Cerrar el menú si clic fuera
-      window.addEventListener('click', (e) => {
-        if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
-          profileMenu.classList.add('hidden');
-        }
-      });
-  </script>
-
-</body>
-
-</html>
+  }
+</script>

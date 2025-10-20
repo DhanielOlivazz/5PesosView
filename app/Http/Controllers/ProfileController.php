@@ -2,64 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Profile;
 use Illuminate\Http\Request;
+use App\Models\Profile;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Mostrar perfil del usuario autenticado
+    public function myProfile()
     {
-        //
+        $profile = Auth::user()->profile;
+
+        if (!$profile) {
+            abort(404, "Perfil no encontrado");
+        }
+
+        $profile->load('user', 'posts');
+        return view('profile.show', compact('profile'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
+    // Mostrar cualquier perfil
     public function show(Profile $profile)
     {
-        //
+        $profile->load('user', 'posts');
+        return view('profile.show', compact('profile'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Editar perfil
     public function edit(Profile $profile)
     {
-        //
+        if (Auth::id() !== $profile->user_id) {
+            abort(403);
+        }
+
+        return view('profile.edit', compact('profile'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Actualizar perfil
     public function update(Request $request, Profile $profile)
     {
-        //
-    }
+        if (Auth::id() !== $profile->user_id) {
+            abort(403);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Profile $profile)
-    {
-        //
+        $data = $request->validate([
+            'picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'description' => 'nullable|string|max:500',
+            'tastes' => 'nullable|array',
+            'location' => 'nullable|string|max:255',
+        ]);
+
+        if ($request->hasFile('picture')) {
+            $data['picture'] = $request->file('picture')->store('profiles', 'public');
+        }
+
+        $profile->update($data);
+
+        return redirect()->route('profile.show', $profile->id)
+                         ->with('success', 'Perfil actualizado correctamente.');
     }
 }

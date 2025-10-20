@@ -19,7 +19,8 @@ return new class extends Migration
             $table->json('tastes')->nullable();
             $table->string('location')->nullable();
             $table->timestamps();
-        });
+});
+
     }
 
     /**

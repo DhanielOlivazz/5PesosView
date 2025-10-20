@@ -11,7 +11,7 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('login'); // Carga login.blade.php
+        return view('auth.login'); // Carga login.blade.php
     }
 
     public function login(Request $request)
