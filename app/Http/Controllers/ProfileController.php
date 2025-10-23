@@ -25,7 +25,7 @@ class ProfileController extends Controller
     public function show(Profile $profile)
     {
         $profile->load('user', 'posts');
-        return view('profile.show', compact('profile'));
+        return view('profile_.show', compact('profile'));
     }
 
     // Editar perfil
@@ -35,7 +35,7 @@ class ProfileController extends Controller
             abort(403);
         }
 
-        return view('profile.edit', compact('profile'));
+        return view('profile_.edit', compact('profile'));
     }
 
     // Actualizar perfil

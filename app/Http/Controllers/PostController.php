@@ -33,33 +33,37 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        // Validación
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'file' => 'required|mimes:pdf|max:10000',
+            'file' => 'required|mimes:pdf|max:50000', // hasta 50 MB
+            'thumbnail' => 'nullable|image|max:10240', // miniatura opcional hasta 10 MB
         ]);
 
-        // Guardar el PDF en storage/app/public/pdfs
+        // Guardar PDF en storage/app/public/pdfs
         $pdfPath = $request->file('file')->store('pdfs', 'public');
 
         // Nombre de la miniatura
         $thumbnailName = Str::random(10) . '.jpg';
-        $thumbnailRelativePath = 'thumbnails/' . $thumbnailName; // ruta para BD
+        $thumbnailRelativePath = 'thumbnails/' . $thumbnailName;
 
         try {
-            // Generar la miniatura de la primera página
-            $pdf = new Pdf(Storage::disk('public')->path($pdfPath));
+            // Generar miniatura de la primera página del PDF
+            $pdf = new \Spatie\PdfToImage\Pdf(Storage::disk('public')->path($pdfPath));
             $pdf->setPage(1)
                 ->saveImage(Storage::disk('public')->path($thumbnailRelativePath));
         } catch (\Exception $e) {
             return back()->withErrors('No se pudo generar la miniatura del PDF. Error: ' . $e->getMessage());
         }
 
+        // Obtener perfil del usuario
         $profile = Auth::user()->profile;
         if (!$profile) {
             return back()->withErrors('El usuario no tiene perfil asignado.');
         }
 
+        // Crear el post
         $post = Post::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -70,6 +74,7 @@ class PostController extends Controller
 
         return redirect()->route('posts.index')->with('success', 'Post creado con éxito.');
     }
+
 
     /**
      * Mostrar un post específico.
@@ -129,7 +134,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        // Opcional: eliminar archivos físicos
+        // Eliminar archivos físicos
         Storage::disk('public')->delete([$post->file, $post->thumbnail]);
 
         $post->delete();
