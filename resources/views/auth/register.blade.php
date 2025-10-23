@@ -3,9 +3,9 @@
 @section('title', 'Registro')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-red-500">
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
-        <h3 class="text-3xl font-bold text-center text-black mb-6">Crear Cuenta</h3>
+<div class="min-h-screen flex items-center justify-center bg-steel-gray">
+    <div class="w-full max-w-md bg-black rounded-3xl shadow-2xl p-8">
+        <h3 class="text-3xl font-bold text-center text-white mb-6">Crear Cuenta</h3>
 
         <!-- Errores -->
         @if ($errors->any())
@@ -23,25 +23,25 @@
             @csrf
 
             <div>
-                <label for="name" class="block text-black mb-1 font-medium">Nombre completo</label>
+                <label for="name" class="block text-white/80 mb-1 font-medium">Nombre completo</label>
                 <input type="text" id="name" name="name" value="{{ old('name') }}" required
                     class="w-full px-4 py-3 rounded-xl bg-gray-100 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500">
             </div>
 
             <div>
-                <label for="email" class="block text-black mb-1 font-medium">Correo electrónico</label>
+                <label for="email" class="block text-white/80 mb-1 font-medium">Correo electrónico</label>
                 <input type="email" id="email" name="email" value="{{ old('email') }}" required
                     class="w-full px-4 py-3 rounded-xl bg-gray-100 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500">
             </div>
 
             <div>
-                <label for="password" class="block text-black mb-1 font-medium">Contraseña</label>
+                <label for="password" class="block text-white/80 mb-1 font-medium">Contraseña</label>
                 <input type="password" id="password" name="password" required
                     class="w-full px-4 py-3 rounded-xl bg-gray-100 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500">
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-black mb-1 font-medium">Confirmar Contraseña</label>
+                <label for="password_confirmation" class="block text-black mb-1 text-white/80 font-medium">Confirmar Contraseña</label>
                 <input type="password" id="password_confirmation" name="password_confirmation" required
                     class="w-full px-4 py-3 rounded-xl bg-gray-100 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500">
             </div>
